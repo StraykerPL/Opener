@@ -1,0 +1,4 @@
+C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe
+https://google.com/
+https://github.com/
+https://facebook.com/

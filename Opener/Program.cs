@@ -1,5 +1,6 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using Opener.Constants;
+using Opener.Starters;
+using Opener.Storage;
 
 namespace Opener
 {
@@ -7,33 +8,15 @@ namespace Opener
     {
         private static void Main()
         {
-            var reader = new StreamReader("websites.txt");
-            var websitesInput = reader.ReadToEnd();
-            reader.Close();
-            reader.Dispose();
+            var fileService = new StandardFileService();
+            var websitesStarter = new WebsitesStarter();
+            var appsStarter = new AppsStarter();
 
-            var websitesEntries = websitesInput.Split('\n').ToList();
-            var browserPath = websitesEntries[0];
-            websitesEntries.RemoveAt(0);
+            var websitesEntries = fileService.Read(FileDirectoryConsts.WebsitesFileDirectory).ToList();
+            var appsEntries = fileService.Read(FileDirectoryConsts.AppsFileDirectory).ToList();
 
-            var websiteLinks = new StringBuilder();
-            foreach (var websiteLink in websitesEntries)
-            {
-                websiteLinks.Append(websiteLink + ' ');
-            }
-
-            Process.Start(browserPath, websiteLinks.ToString());
-
-            reader = new StreamReader("apps.txt");
-            var appsInput = reader.ReadToEnd();
-            reader.Close();
-            reader.Dispose();
-
-            var appsEntries = appsInput.Split('\n').ToList();
-            foreach (var appsEntry in appsEntries)
-            {
-                Process.Start(appsEntry);
-            }
+            websitesStarter.Start(websitesEntries);
+            appsStarter.Start(appsEntries);
         }
     }
 }
