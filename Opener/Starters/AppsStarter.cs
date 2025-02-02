@@ -3,16 +3,23 @@ using System.Diagnostics;
 
 namespace Opener.Starters
 {
-    public class AppsStarter : IAppsStarter
+    public sealed class AppsStarter : IAppsStarter
     {
+        private readonly IProcessCreationProvider _processCreationProvider;
+
+        public AppsStarter(IProcessCreationProvider processCreationProvider)
+        {
+            _processCreationProvider = processCreationProvider;
+        }
+
         public ICollection<Process> Start(ICollection<string> args)
         {
             var appsEntries = args.ToList();
             var processes = new List<Process>();
 
-            foreach (var appsEntry in appsEntries)
+            foreach (var appPath in appsEntries)
             {
-                processes.Add(Process.Start(appsEntry));
+                processes.Add(_processCreationProvider.Create(appPath));
             }
 
             return processes;

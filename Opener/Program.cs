@@ -1,4 +1,5 @@
 ﻿using Opener.Constants;
+using Opener.Providers;
 using Opener.Starters;
 using Opener.Storage;
 
@@ -9,8 +10,10 @@ namespace Opener
         private static void Main()
         {
             var fileService = new StandardFileService();
-            var websitesStarter = new WebsitesStarter();
-            var appsStarter = new AppsStarter();
+            var processProvider = new DotNetProcessCreationProvider();
+
+            var websitesStarter = new WebsitesStarter(processProvider);
+            var appsStarter = new AppsStarter(processProvider);
 
             var websitesEntries = fileService.Read(FileDirectoryConsts.WebsitesFileDirectory).ToList();
             var appsEntries = fileService.Read(FileDirectoryConsts.AppsFileDirectory).ToList();

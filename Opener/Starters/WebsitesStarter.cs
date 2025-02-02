@@ -4,8 +4,15 @@ using System.Text;
 
 namespace Opener.Starters
 {
-    public class WebsitesStarter : IWebsitesStarter
+    public sealed class WebsitesStarter : IWebsitesStarter
     {
+        private readonly IProcessCreationProvider _processCreationProvider;
+
+        public WebsitesStarter(IProcessCreationProvider processCreationProvider)
+        {
+            _processCreationProvider = processCreationProvider;
+        }
+
         public ICollection<Process> Start(ICollection<string> args)
         {
             var websitesEntries = args.ToList();
@@ -18,7 +25,7 @@ namespace Opener.Starters
                 websiteLinks.Append(websiteLink + ' ');
             }
 
-            return [Process.Start(browserPath, websiteLinks.ToString())];
+            return [_processCreationProvider.Create(browserPath, websiteLinks.ToString())];
         }
     }
 }
