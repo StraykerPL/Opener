@@ -1,4 +1,6 @@
-﻿using Opener.Constants;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Opener.Models;
 using Opener.Providers;
 using Opener.Starters;
 using Opener.Storage;
@@ -9,17 +11,19 @@ namespace Opener
     {
         private static void Main()
         {
-            var fileService = new StandardFileService();
-            var processProvider = new DotNetProcessCreationProvider();
+            IHost host = Host.CreateDefaultBuilder()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddScoped<IFileService, StandardFileService>();
+                    services.AddScoped<IProcessCreationProvider, DotNetProcessCreationProvider>();
+                    services.AddScoped<IWebsitesStarter, WebsitesStarter>();
+                    services.AddScoped<IAppsStarter, AppsStarter>();
+                    services.AddHostedService<OpenerHostedService>();
+                })
+                .UseConsoleLifetime()
+                .Build();
 
-            var websitesStarter = new WebsitesStarter(processProvider);
-            var appsStarter = new AppsStarter(processProvider);
-
-            var websitesEntries = fileService.Read(FileDirectoryConsts.WebsitesFileDirectory).ToList();
-            var appsEntries = fileService.Read(FileDirectoryConsts.AppsFileDirectory).ToList();
-
-            websitesStarter.Start(websitesEntries);
-            appsStarter.Start(appsEntries);
+            host.Start();
         }
     }
 }
