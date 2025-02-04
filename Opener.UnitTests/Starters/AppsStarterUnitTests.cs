@@ -10,12 +10,17 @@ namespace Opener.UnitTests.Starters
 
         private AppsStarter? _appsStarter;
 
+        public AppsStarterUnitTests()
+        {
+            _processCreationProviderMock = new();
+        }
+
         [Fact]
         public void AppsStarterCreatesSingleAppProcess()
         {
             // Arrange
-            var fakeProc = new Mock<Process>();
-            _processCreationProviderMock.Setup(x => x.Create(It.IsAny<string>())).Returns(fakeProc.Object);
+            var fakeProc = new ProcessStub();
+            _processCreationProviderMock.Setup(x => x.Create(It.IsAny<string>())).Returns(fakeProc);
             _appsStarter = new AppsStarter(_processCreationProviderMock.Object);
 
             // Act
@@ -24,36 +29,39 @@ namespace Opener.UnitTests.Starters
             // Assert
             Assert.NotNull(result);
             Assert.Single(result);
-            Assert.StrictEqual(fakeProc.Object, result.First());
+            Assert.StrictEqual(fakeProc, result.First());
         }
 
-        //[Fact]
-        //public void AppsStarterCreatesManyAppProcesses()
-        //{
-        //    // Arrange
-        //    var procNames = new List<string>() { "awsome-app-1.exe", "awsome-app-2.exe", "awsome-app-3.exe" };
-        //    var fakeProcs = procNames
-        //        .Select(name =>
-        //        {
-        //            var mock = new Mock<Process>();
-        //            var fakeStartInfo = new ProcessStartInfo
-        //            {
-        //                FileName = name,
-        //            };
-        //            mock.Setup(x => x.StartInfo).Returns(fakeStartInfo);
-        //            _processCreationProviderMock.Setup(x => x.Create(name)).Returns(mock.Object);
-        //            return mock;
-        //        })
-        //        .ToList();
-        //    _appsStarter = new AppsStarter(_processCreationProviderMock.Object);
+        [Fact]
+        public void AppsStarterCreatesManyAppProcesses()
+        {
+            // Arrange
+            var procNames = new List<string>() { "awsome-app-1.exe", "awsome-app-2.exe", "awsome-app-3.exe" };
 
-        //    // Act
-        //    var result = _appsStarter.Start(procNames);
+            // "fakeProcs" variable must exist until the end of test, otherwise the last Assert will throw exception,
+            // as mocked and stubbed objects exists under this variable.
+            var fakeProcs = procNames.Select(name =>
+            {
+                var stub = new ProcessStub();
+                var fakeStartInfo = new ProcessStartInfo
+                {
+                    FileName = name,
+                };
 
-        //    // Assert
-        //    Assert.NotNull(result);
-        //    Assert.Equal(procNames.Count, result.Count);
-        //    Assert.Equal(procNames, result.Select(x => x.StartInfo.FileName));
-        //}
+                stub.StartInfo = fakeStartInfo;
+                _processCreationProviderMock.Setup(x => x.Create(name)).Returns(stub);
+
+                return stub;
+            }).ToList();
+            _appsStarter = new AppsStarter(_processCreationProviderMock.Object);
+
+            // Act
+            var result = _appsStarter.Start(procNames);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(procNames.Count, result.Count);
+            Assert.Equal(procNames, result.Select(x => x.StartInfo.FileName));
+        }
     }
 }
