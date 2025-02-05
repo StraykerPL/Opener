@@ -6,6 +6,8 @@ namespace Opener.Starters
 {
     public sealed class WebsitesStarter : IWebsitesStarter
     {
+        private const char LinksSeparator = ' ';
+
         private readonly IProcessCreationProvider _processCreationProvider;
 
         public WebsitesStarter(IProcessCreationProvider processCreationProvider)
@@ -22,7 +24,12 @@ namespace Opener.Starters
             var websiteLinks = new StringBuilder();
             foreach (var websiteLink in websitesEntries)
             {
-                websiteLinks.Append(websiteLink + ' ');
+                websiteLinks.Append(websiteLink.Replace(Environment.NewLine, string.Empty));
+
+                if (websitesEntries.IndexOf(websiteLink) != websitesEntries.Count - 1)
+                {
+                    websiteLinks.Append(LinksSeparator);
+                }
             }
 
             return [_processCreationProvider.Create(browserPath, websiteLinks.ToString())];

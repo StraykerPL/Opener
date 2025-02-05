@@ -1,3 +1,3 @@
 notepad.exe
 calc.exe
-cmd.exe
+charmap.exe

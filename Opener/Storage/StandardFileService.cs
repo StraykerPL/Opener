@@ -1,4 +1,6 @@
-﻿using Opener.Models;
+﻿using CommunityToolkit.Diagnostics;
+using Opener.Constants;
+using Opener.Models;
 
 namespace Opener.Storage
 {
@@ -6,10 +8,15 @@ namespace Opener.Storage
     {
         public ICollection<string> Read(string fileDir)
         {
+            if (!File.Exists(fileDir))
+            {
+                ThrowHelper.ThrowArgumentException(nameof(fileDir), ExceptionMessages.InvalidPathMessage);
+            }
+
             using var reader = new StreamReader(fileDir);
             var input = reader.ReadToEnd();
             reader.Close();
-            var entries = input.Split('\n').ToList();
+            var entries = input.Split(Environment.NewLine).ToList();
 
             return entries;
         }

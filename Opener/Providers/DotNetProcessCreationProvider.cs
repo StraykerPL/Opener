@@ -1,6 +1,5 @@
 ﻿using Opener.Models;
 using System.Diagnostics;
-using System.Text;
 
 namespace Opener.Providers
 {
@@ -14,15 +13,7 @@ namespace Opener.Providers
             }
             else
             {
-                var builder = new StringBuilder();
-                foreach (string arg in args)
-                {
-                    builder.Append(arg);
-                    builder.Append(' ');
-                }
-                builder.Remove(builder.Length - 1, 1);
-
-                return Process.Start(builder.ToString());
+                return Process.Start(args[0]);
             }
         }
     }
