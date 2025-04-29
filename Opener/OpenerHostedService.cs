@@ -24,11 +24,17 @@ namespace Opener
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var websitesEntries = _fileService.Read(FileDirectoryConsts.WebsitesFileDirectory).ToList();
-            var appsEntries = _fileService.Read(FileDirectoryConsts.AppsFileDirectory).ToList();
+            if (File.Exists(FileDirectoryConsts.WebsitesFileDirectory))
+            {
+                var websitesEntries = _fileService.Read(FileDirectoryConsts.WebsitesFileDirectory).ToList();
+                _websitesStarter.Start(websitesEntries);
+            }
 
-            _websitesStarter.Start(websitesEntries);
-            _appsStarter.Start(appsEntries);
+            if (File.Exists(FileDirectoryConsts.AppsFileDirectory))
+            {
+                var appsEntries = _fileService.Read(FileDirectoryConsts.AppsFileDirectory).ToList();
+                _appsStarter.Start(appsEntries);
+            }
 
             return Task.CompletedTask;
         }
