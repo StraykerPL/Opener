@@ -1,4 +1,3 @@
-﻿using CommunityToolkit.Diagnostics;
 using Opener.Constants;
 using Opener.Models;
 
@@ -10,7 +9,7 @@ namespace Opener.Storage
         {
             if (!File.Exists(fileDir))
             {
-                ThrowHelper.ThrowArgumentException(nameof(fileDir), ExceptionMessages.InvalidPathMessage);
+                throw new ArgumentException(ExceptionMessages.InvalidPathMessage, nameof(fileDir));
             }
 
             using var reader = new StreamReader(fileDir);

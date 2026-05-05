@@ -1,4 +1,4 @@
-﻿namespace Opener.Constants
+namespace Opener.Constants
 {
     public static class FileDirectoryConsts
     {

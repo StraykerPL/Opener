@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "BulkOpenerExtension (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "BulkOpenerExtension (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

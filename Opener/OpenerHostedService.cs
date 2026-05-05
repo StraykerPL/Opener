@@ -1,40 +1,20 @@
 ﻿using Microsoft.Extensions.Hosting;
-using Opener.Constants;
 using Opener.Models;
 
 namespace Opener
 {
     public sealed class OpenerHostedService : IHostedService
     {
-        private readonly IFileService _fileService;
+        private readonly IOpenerService _openerService;
 
-        private readonly IWebsitesStarter _websitesStarter;
-
-        private readonly IAppsStarter _appsStarter;
-
-        public OpenerHostedService(
-            IFileService fileService,
-            IWebsitesStarter websitesStarter,
-            IAppsStarter appsStarter)
+        public OpenerHostedService(IOpenerService openerService)
         {
-            _fileService = fileService;
-            _websitesStarter = websitesStarter;
-            _appsStarter = appsStarter;
+            _openerService = openerService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            if (File.Exists(FileDirectoryConsts.WebsitesFileDirectory))
-            {
-                var websitesEntries = _fileService.Read(FileDirectoryConsts.WebsitesFileDirectory).ToList();
-                _websitesStarter.Start(websitesEntries);
-            }
-
-            if (File.Exists(FileDirectoryConsts.AppsFileDirectory))
-            {
-                var appsEntries = _fileService.Read(FileDirectoryConsts.AppsFileDirectory).ToList();
-                _appsStarter.Start(appsEntries);
-            }
+            _openerService.Open(new OpenerConfiguration());
 
             return Task.CompletedTask;
         }

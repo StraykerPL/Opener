@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Opener\Opener.csproj" />
+    <ProjectReference Include="..\Opener.Core\Opener.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

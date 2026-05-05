@@ -1,4 +1,4 @@
-﻿using Opener.Models;
+using Opener.Models;
 using System.Diagnostics;
 using System.Text;
 
